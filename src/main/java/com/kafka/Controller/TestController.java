@@ -44,7 +44,7 @@ public class TestController {
  }
 	
 	@PostMapping("/post")
-	public ResponseEntity<String>createUser(@Valid @RequestBody UserDto user){
+	public ResponseEntity<String>createUser( @RequestBody @Valid UserDto user){
 	userService.saveUser(user);
 		return ResponseEntity.ok("UserCreated Successfully");
 	}

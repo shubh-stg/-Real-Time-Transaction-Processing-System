@@ -29,6 +29,9 @@ public class UserService {
 }
 
     public User saveUser(UserDto userDto) {
+    	if (String.valueOf(userDto.getId()).length() != 10) {
+    	    throw new IllegalArgumentException("ID must be a 10-digit number");
+    	}
     	User user=modelMapper.map(userDto, User.class);
         return userRepository.save(user);
     }

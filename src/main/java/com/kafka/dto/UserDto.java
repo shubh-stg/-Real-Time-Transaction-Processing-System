@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
 public class UserDto {
 
     @NotNull(message = "ID cannot be null")
-    @Digits(integer = 10, fraction = 0)
+    
 
     private Long id;
 
