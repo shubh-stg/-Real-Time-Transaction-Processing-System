@@ -1,5 +1,6 @@
 package com.kafka.kafkaclasses;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -10,13 +11,13 @@ import com.kafka.dto.Message;
 @Service
 public class TransactionProducer {
  
+	@Autowired
 	private KafkaTemplate<String, String>kafkaTemplate;
-	private final ObjectMapper objectMapper;
 	
-	public TransactionProducer(KafkaTemplate<String, String>kafkaTemplate,ObjectMapper objectMapper) {
-		this.kafkaTemplate=kafkaTemplate;
-		this.objectMapper=new ObjectMapper();
-	}
+	@Autowired
+	private ObjectMapper objectMapper;
+	
+
 	 private final String topic = "transaction-topic";
 	 
 	    public void send(Message message) throws JsonProcessingException {

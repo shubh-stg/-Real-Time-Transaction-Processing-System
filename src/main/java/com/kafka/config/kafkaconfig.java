@@ -13,6 +13,9 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 
 @Configuration
 public class kafkaconfig {
@@ -21,6 +24,11 @@ public class kafkaconfig {
 	public NewTopic topicCreation() {
 		return new NewTopic("transaction-topic", 1, (short)1);
 		
+	}
+	
+	@Bean
+	public NewTopic topicCreator() {
+		return new NewTopic("notification-topic", 1, (short)1);
 	}
 	@Bean
 	public ProducerFactory<String, String> producerFactory(){
@@ -37,6 +45,11 @@ public class kafkaconfig {
 	}
 	
 
-	
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper()
+            .registerModule(new JavaTimeModule());
+            
+    }
 	 
 }

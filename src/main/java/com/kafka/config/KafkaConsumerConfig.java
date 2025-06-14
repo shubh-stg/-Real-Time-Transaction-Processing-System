@@ -17,23 +17,44 @@ import java.util.Map;
 @EnableKafka
 public class KafkaConsumerConfig {
 
+    // 🔹 Consumer Factory for Transaction
     @Bean
-    public ConsumerFactory<String, String> consumerFactory() {
+    public ConsumerFactory<String, String> transactionConsumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "transaction-group");
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest"); // 
-
+        configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         return new DefaultKafkaConsumerFactory<>(configProps);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, String> transactionKafkaListenerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(transactionConsumerFactory());
+        return factory;
+    }
+
+    // 🔹 Consumer Factory for Notification
+    @Bean
+    public ConsumerFactory<String, String> notificationConsumerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "notification-group");
+        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        return new DefaultKafkaConsumerFactory<>(configProps);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, String> notificationKafkaListenerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(notificationConsumerFactory());
         return factory;
     }
 }
+

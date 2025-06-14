@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kafka.Exception.InsufficientBalanceException;
 import com.kafka.dto.Message;
+import com.kafka.dto.NotificationDto;
+import com.kafka.entity.NotificationType;
 import com.kafka.entity.TransactStatus;
 import com.kafka.entity.Transaction;
 import com.kafka.entity.User;
@@ -23,16 +26,22 @@ import jakarta.transaction.Transactional;
 public class TransactionConsumer {
 
     private static final Logger logger = LoggerFactory.getLogger(TransactionConsumer.class);
+    @Autowired
+    private  ObjectMapper objectMapper ;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
     
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private TransactionRepository transactionRepository;
+    
+
+    
+    @Autowired
+    private NotificationProducer notificationProducer;
 
     @Transactional
-    @KafkaListener(topics = "transaction-topic", groupId = "transaction-group")
+    @KafkaListener(topics = "transaction-topic", groupId = "transaction-group" ,containerFactory = "transactionKafkaListenerFactory")
     public void consume(String jsonmessage) {
         TransactStatus status;
         Message message = null;
@@ -54,13 +63,37 @@ public class TransactionConsumer {
             receiver.setBalance(receiver.getBalance() + message.getAmount());
 
             userRepository.save(sender);
+            
+            
+            if (sender.getBalance() < 100) {
+                NotificationDto warning = new NotificationDto();
+                warning.setUserId(sender.getId());
+                warning.setMessage("Warning: Your account balance is below ₹1000.");
+                warning.setType(NotificationType.WARNING);
+                warning.setTimestamp(LocalDateTime.now());
+                notificationProducer.send(warning);
+            }
+            
+            
+            
             userRepository.save(receiver);
 
             status = TransactStatus.SUCCESS;
+            
+            sendNotification(message.getSenderId(),"You successfully sent ₹" + message.getAmount() + " to user " + receiver.getId(),NotificationType.SUCCESS);
+            sendNotification(message.getRecieverId(),"You received ₹" + message.getAmount() + " from user " + sender.getId(),NotificationType.SUCCESS);
 
         } catch (Exception e) {
             status = TransactStatus.FAILED;
+            
             logger.error("Error while consuming message", e);
+            
+            try {
+				sendNotification(message.getSenderId(), "Transaction failed: " + e.getMessage() , NotificationType.FAILURE);
+			} catch (JsonProcessingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         }
 
         try {
@@ -77,5 +110,16 @@ public class TransactionConsumer {
             logger.error("Failed to persist transaction record: {}", ex.getMessage(), ex);
         }
     }
+
+	private void sendNotification(Long Id, String content, NotificationType type) throws JsonProcessingException {
+		
+		NotificationDto notification=new NotificationDto();
+		notification.setUserId(Id);
+		notification.setMessage(content);
+		notification.setType(type);
+		notification.setTimestamp(LocalDateTime.now());
+		
+		notificationProducer.send(notification);
+	}
 }
 
