@@ -2,7 +2,7 @@ package com.kafka.dto;
 
 public class DailyTransactionDTO {
     private String date;
-    private float amount; // or use float amount if you're summing
+    private float amount; 
 
 
 

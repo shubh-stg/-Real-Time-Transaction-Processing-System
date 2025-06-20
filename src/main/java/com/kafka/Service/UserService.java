@@ -35,5 +35,10 @@ public class UserService {
     	User user=modelMapper.map(userDto, User.class);
         return userRepository.save(user);
     }
+
+	public void deleteUser(Long userId) {
+		userRepository.deleteById(userId);
+		
+	}
 	
 }

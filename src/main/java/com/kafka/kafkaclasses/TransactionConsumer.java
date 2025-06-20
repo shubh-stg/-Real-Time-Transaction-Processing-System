@@ -65,7 +65,7 @@ public class TransactionConsumer {
             userRepository.save(sender);
             
             
-            if (sender.getBalance() < 100) {
+            if (sender.getBalance() < 1000) {
                 NotificationDto warning = new NotificationDto();
                 warning.setUserId(sender.getId());
                 warning.setMessage("Warning: Your account balance is below ₹1000.");
@@ -80,8 +80,10 @@ public class TransactionConsumer {
 
             status = TransactStatus.SUCCESS;
             
-            sendNotification(message.getSenderId(),"You successfully sent ₹" + message.getAmount() + " to user " + receiver.getId(),NotificationType.SUCCESS);
-            sendNotification(message.getRecieverId(),"You received ₹" + message.getAmount() + " from user " + sender.getId(),NotificationType.SUCCESS);
+          sendNotification(message.getSenderId(),"You successfully sent ₹" + message.getAmount() + " to user " + receiver.getName(),NotificationType.SUCCESS);
+          sendNotification(message.getRecieverId(),"You received ₹" + message.getAmount() + " from user " + sender.getName(),NotificationType.SUCCESS);
+//            logger.info("Sender: ID={}, Name={}", sender.getId(), sender.getName());
+//            logger.info("Receiver: ID={}, Name={}", receiver.getId(), receiver.getName());
 
         } catch (Exception e) {
             status = TransactStatus.FAILED;

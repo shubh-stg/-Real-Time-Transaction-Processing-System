@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kafka.dto.BasicAdminAnalytics;
 import com.kafka.dto.DailyTransactionDTO;
 import com.kafka.dto.StatusRatioDTO;
 import com.kafka.dto.TopUserDTO;
@@ -21,23 +22,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 	@Autowired
 	private TransactionRepository transactionRepository;
 	
-	@Override
-	public long getTotalUserCount() {
-		
-		return userRepository.count();
-	}
 
-	@Override
-	public long getTotalTransactionCount() {
-		
-		return transactionRepository.count();
-	}
-
-	@Override
-	public float getTotalTransactionVolume() {
-		Float sumOfSuccessfulTransactionAmount = transactionRepository.sumOfSuccessfulTransactionAmount();
-		return sumOfSuccessfulTransactionAmount != null ? sumOfSuccessfulTransactionAmount : 0;
-	}
 
 	@Override
 	public List<StatusRatioDTO> getTransactionStatusRatio() {
@@ -67,9 +52,21 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 		    return result.stream()
 		        .map(row -> new TopUserDTO(
 		            (Long) row[0],
-		            ((Double) row[1]).floatValue() // handle Double to Float
+		            	row[1].toString(),
+		            ((Double) row[2])
+ 
+		            
 		        ))
 		        .collect(Collectors.toList());
+	}
+
+	@Override
+	public BasicAdminAnalytics basicAdminAnalytics() {
+		long count =userRepository.count();
+		long transac_count=transactionRepository.count();
+		 Double sumOfSuccessfulTransactionAmount = transactionRepository.sumOfSuccessfulTransactionAmount();
+		 
+		return new BasicAdminAnalytics(count, transac_count,sumOfSuccessfulTransactionAmount != null ?sumOfSuccessfulTransactionAmount:0.0);
 	}
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kafka.Service.NotificationService;
 import com.kafka.dto.NotificationDto;
 
+@CrossOrigin(origins ="http://localhost:5173/")
 @RestController
 @RequestMapping("/api/noti")
 public class NotificationController {
@@ -41,9 +43,9 @@ public class NotificationController {
     }
 
     // 4. Delete all notifications for a user
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteAllNotifications(@PathVariable Long userId) {
-        notificationService.deleteNotifications(userId);
+    @DeleteMapping("/{Id}/delete")
+    public ResponseEntity<String> deleteAllNotifications(@PathVariable Long Id) {
+        notificationService.deleteaNotification(Id);
         return ResponseEntity.ok("Notification deleted");
     }
 	

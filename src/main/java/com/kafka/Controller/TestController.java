@@ -6,7 +6,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +25,10 @@ import com.kafka.kafkaclasses.TransactionProducer;
 
 import jakarta.validation.Valid;
 
-
+@CrossOrigin(origins ="http://localhost:5173/")
 @RestController
 @RequestMapping("/api")
-public class TestController {
+public class TestController { 
 	
 	@Autowired
 	private TransactionProducer transactionProducer;
@@ -36,18 +39,26 @@ public class TestController {
 	@Autowired
 	private TransactionService transactionService;
 	
-	@GetMapping("/get")
+	@GetMapping("/get-users")
  public ResponseEntity<List<UserDto>> getAllUsers(){
 	 List<UserDto> allUsers = userService.getAllUsers();
 	return new ResponseEntity<>(allUsers,HttpStatus.OK);
 	 
  }
 	
-	@PostMapping("/post")
+	@PostMapping("/add-user")
 	public ResponseEntity<String>createUser( @RequestBody @Valid UserDto user){
 	userService.saveUser(user);
 		return ResponseEntity.ok("UserCreated Successfully");
 	}
+	@DeleteMapping("/delete-user")
+	public ResponseEntity<String>deleteUser(@PathVariable Long userId){
+		userService.deleteUser(userId);
+		return ResponseEntity.ok("User Deleted Successfully");
+		
+		
+	}
+	
 	@PostMapping("/publish")
 	public ResponseEntity<String>publish(@RequestBody Message message) throws JsonProcessingException{
 		transactionProducer.send(message);

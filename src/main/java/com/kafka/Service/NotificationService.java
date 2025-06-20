@@ -38,8 +38,8 @@ public class NotificationService {
 	    notificationRepository.saveAll(unseen);
 	}
 	@Transactional
-	public void deleteNotifications(Long userId) {
-	    notificationRepository.deleteByUserId(userId);
+	public void deleteaNotification(Long Id) {
+	    notificationRepository.deleteById(Id);
 	}
 	
 }
