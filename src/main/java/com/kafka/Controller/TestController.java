@@ -29,42 +29,12 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api")
 public class TestController { 
-	
-	@Autowired
-	private TransactionProducer transactionProducer;
-	
-	@Autowired
-	private UserService userService;
+
 	
 	@Autowired
 	private TransactionService transactionService;
 	
-	@GetMapping("/get-users")
- public ResponseEntity<List<UserDto>> getAllUsers(){
-	 List<UserDto> allUsers = userService.getAllUsers();
-	return new ResponseEntity<>(allUsers,HttpStatus.OK);
-	 
- }
-	
-	@PostMapping("/add-user")
-	public ResponseEntity<String>createUser( @RequestBody @Valid UserDto user){
-	userService.saveUser(user);
-		return ResponseEntity.ok("UserCreated Successfully");
-	}
-	@DeleteMapping("/delete-user")
-	public ResponseEntity<String>deleteUser(@PathVariable Long userId){
-		userService.deleteUser(userId);
-		return ResponseEntity.ok("User Deleted Successfully");
-		
-		
-	}
-	
-	@PostMapping("/publish")
-	public ResponseEntity<String>publish(@RequestBody Message message) throws JsonProcessingException{
-		transactionProducer.send(message);
-		return ResponseEntity.ok("Transaction sent to kafka successfully");
-		
-	}
+
 	@GetMapping("/transaction-history")
 	public ResponseEntity<List<Transaction>> getAllTransactions(){
 		List<Transaction> allUsers = transactionService.getAllTrans();

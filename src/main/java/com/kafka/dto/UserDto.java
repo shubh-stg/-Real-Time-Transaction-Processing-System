@@ -8,62 +8,109 @@ import jakarta.validation.constraints.Size;
 
 public class UserDto {
 
-    @NotNull(message = "ID cannot be null")
-    
+	    @NotNull(message = "ID cannot be null")
+	    @Digits(integer = 10, fraction = 0)
+	    private Long id;
 
-    private Long id;
+	    @NotBlank(message = "Name cannot be blank")
+	    @Size(min = 2, max = 50, message = "Name should be between 2 to 50 characters")
+	    private String name;
 
-    @NotBlank(message = "Name cannot be blank")
-    @Size(min = 2, max = 50, message = "Name should be between 2 to 50 characters")
-    private String name;
+	    @NotNull(message = "Balance amount cannot be null")
+	    @DecimalMin(value = "0.0", inclusive = false)
+	    private Float balance;
 
-    @NotNull(message = "Balance amount cannot be null")
-    @DecimalMin(value = "0.0", inclusive = false)
-    private Float balance;
+	    @NotBlank(message = "Username cannot be blank")
+	    private String username;
 
-	public Long getId() {
-		return id;
-	}
+	    @NotBlank(message = "Password cannot be blank")
+	    private String password;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+	 
+	    private String role;
 
-	public String getName() {
-		return name;
-	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
+		public Long getId() {
+			return id;
+		}
 
-	public Float getBalance() {
-		return balance;
-	}
 
-	public void setBalance(Float amount) {
-		this.balance = amount;
-	}
+		public void setId(Long id) {
+			this.id = id;
+		}
 
-	public UserDto(@NotNull(message = "ID cannot be null") @Digits(integer = 10, fraction = 0) Long id,
-			@NotBlank(message = "Name cannot be blank") @Size(min = 2, max = 50, message = "Name should be between 2 to 50 characters") String name,
-			@NotNull(message = "Balance amount cannot be null") @DecimalMin(value = "0.0", inclusive = false) Float balance) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.balance = balance;
-	}
 
-	public UserDto() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+		public String getName() {
+			return name;
+		}
 
-	@Override
-	public String toString() {
-		return "UserDto [id=" + id + ", name=" + name + ", amount=" + balance + "]";
-	}
 
+		public void setName(String name) {
+			this.name = name;
+		}
+
+
+		public Float getBalance() {
+			return balance;
+		}
+
+
+		public void setBalance(Float balance) {
+			this.balance = balance;
+		}
+
+
+		public String getUsername() {
+			return username;
+		}
+
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
+
+
+		public String getPassword() {
+			return password;
+		}
+
+
+		public void setPassword(String password) {
+			this.password = password;
+		}
+
+
+		public String getRole() {
+			return role;
+		}
+
+
+		public void setRole(String role) {
+			this.role = role;
+		}
+
+
+		public UserDto(@NotNull(message = "ID cannot be null") @Digits(integer = 10, fraction = 0) Long id,
+				@NotBlank(message = "Name cannot be blank") @Size(min = 2, max = 50, message = "Name should be between 2 to 50 characters") String name,
+				@NotNull(message = "Balance amount cannot be null") @DecimalMin(value = "0.0", inclusive = false) Float balance,
+				@NotBlank(message = "Username cannot be blank") String username,
+				@NotBlank(message = "Password cannot be blank") String password, String role) {
+			super();
+			this.id = id;
+			this.name = name;
+			this.balance = balance;
+			this.username = username;
+			this.password = password;
+			this.role = role;
+		}
+
+
+		public UserDto() {
+			super();
+			// TODO Auto-generated constructor stub
+		} 
+
+	
     
 }
 
