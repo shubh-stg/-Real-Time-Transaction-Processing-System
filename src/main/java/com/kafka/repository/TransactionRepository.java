@@ -36,13 +36,13 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long>{
 	@Query("select sum(t.amount) from Transaction t where t.recieverId= :userId and t.status ='SUCCESS' ")
 	Double sumAmountByReceiver(@Param("userId") Long userId);
 	
-	@Query("SELECT AVG(t.amount) FROM Transaction t WHERE t.senderId = :userId OR t.recieverId = :userId")
-	double averageAmountByUser(Long userId);
+	@Query("SELECT AVG(t.amount) FROM Transaction t WHERE (t.senderId = :userId OR t.recieverId = :userId) and t.status ='SUCCESS'")
+	Double averageAmountByUser(Long userId);
 
-	@Query("SELECT MAX(t.amount) FROM Transaction t WHERE t.senderId = :userId OR t.recieverId = :userId ")
-	double maxAmountBySenderId(Long userId);
+	@Query("SELECT MAX(t.amount) FROM Transaction t WHERE (t.senderId = :userId OR t.recieverId = :userId ) and t.status ='SUCCESS'")
+	Double maxAmountBySenderId(Long userId);
 	
-	@Query("SELECT COUNT(t) FROM Transaction t WHERE t.senderId = :userId OR t.recieverId = :userId")
+	@Query("SELECT COUNT(t) FROM Transaction t WHERE (t.senderId = :userId OR t.recieverId = :userId ) and t.status ='SUCCESS'")
 	int countBySenderIdOrReceiverId(@Param("userId") Long userId);
 
 	
